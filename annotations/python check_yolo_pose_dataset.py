@@ -1,7 +1,7 @@
 import os
 
 # Define dataset paths
-dataset_root = r"C:\Users\220250572\OneDrive - Regal Rexnord\Desktop\Ergonmics\Dataset"
+dataset_root = r"C:\Users\220250572\Desktop\Ergonmics\Dataset"
 image_dirs = {
     "train": os.path.join(dataset_root, "Images", "Train"),
     "val": os.path.join(dataset_root, "Images", "Validation")
@@ -58,3 +58,4 @@ for split in ["train", "val"]:
     print(f"Empty label files: {len(empty_labels[split])}")
     if empty_labels[split]:
         print(" - " + "\n - ".join(empty_labels[split]))
+
