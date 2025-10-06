@@ -8,3 +8,4 @@ torchvision
 matplotlib
 openpyxl
 fitz
+os
