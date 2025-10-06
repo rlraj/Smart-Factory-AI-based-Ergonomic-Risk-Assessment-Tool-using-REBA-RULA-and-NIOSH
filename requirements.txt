@@ -6,3 +6,4 @@ ultralytics
 torch
 torchvision
 matplotlib
+openpyxl
