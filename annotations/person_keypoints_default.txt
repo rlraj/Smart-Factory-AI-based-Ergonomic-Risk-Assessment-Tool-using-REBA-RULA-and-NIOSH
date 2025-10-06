@@ -1,0 +1,1 @@
+CVAT output as person Keypoint defaults... The output is JSON. we have written a python code to re-arrange keypoints as per COCO17 Keypoints. After rearrange the file saved as person_keypoints_coco17_fixed.txt
