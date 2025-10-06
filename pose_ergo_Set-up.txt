@@ -35,11 +35,11 @@ COCO_KEYPOINTS = [
 
 ]
 
-C:\Users\220250572\OneDrive - Regal Rexnord\Desktop\Ergonmics\ergoposekeypoints\annotations
+C:\Users\220250572\Desktop\Ergonmics\ergoposekeypoints\annotations
 if Coco keypoints were mixed up then need to run the fix_coco17_keypoints.py script. (o/P pl see the file person_keypoints_coco17_fixed.JSON)
 
 # convert person_keypoints_coco17_fixed.json to YOLO.txt i used GPT5 to convert. (pl check the output in the following path
-C:\Users\220250572\OneDrive - Regal Rexnord\Desktop\Ergonmics\Dataset\labels\train\'.txt'
+C:\Users\220250572\Desktop\Ergonmics\Dataset\labels\train\'.txt'
 output : 
 0 0.5430153846153847 0.5054188481675392 0.3596923076923077 0.6636649214659686 0.46876923076923077 0.2080628272251309 2 0.46070769230769226 0.17908376963350783 1 0.4450769230769231 0.1894502617801047 2 0.3937846153846154 0.17358638743455498 1 0.37384615384615383 0.20641361256544502 2 0.3631692307692308 0.26905759162303666 1 0.36467692307692307 0.32175392670157066 2 0.4740615384615384 0.4618324607329843 1 0.3973846153846154 0.4844502617801047 2 0.5695076923076923 0.47717277486911 2 0.5613846153846154 0.52 2 0.44110769230769237 0.482696335078534 1 0.3872923076923077 0.5915706806282722 2 0.7228615384615384 0.5916230366492147 1 0.7156923076923076 0.6431937172774869 2 0.661723076923077 0.7856544502617802 2 0.6868615384615384 0.8372513089005236 2
 
@@ -108,7 +108,7 @@ This is the correct format for YOLOv8 pose training.
 
 and after validate to check the result were as per coco 17 pl validate_coco17_json.py
 oputput looks like:
-(pose_ergo) PS C:\Users\220250572\OneDrive - Regal Rexnord\Desktop\Ergonmics\ergoposekeypoints\annotations> python "validate_coco17_json.py"
+(pose_ergo) PS C:\Users\220250572\Desktop\Ergonmics\ergoposekeypoints\annotations> python "validate_coco17_json.py"
 === COCO-17 Validation Report ===
 Images: 13 | Annotations: 13 | Categories: 1
 
@@ -118,8 +118,8 @@ Convert
 
 person_keypoints_coco17.yaml
 
-train: C:/Users/220250572/OneDrive - Regal Rexnord/Desktop/Ergonmics/Dataset/images/train     # Folder with training images
-val: C:/Users/220250572/OneDrive - Regal Rexnord/Desktop/Ergonmics/Dataset/images/validation         # Folder with validation images
+train: C:/Users/220250572/Desktop/Ergonmics/Dataset/images/train     # Folder with training images
+val: C:/Users/220250572/Desktop/Ergonmics/Dataset/images/validation         # Folder with validation images
 
 # Number of classes (person)
 nc: 1
@@ -167,7 +167,7 @@ Total label files found: 13
 Missing label files: 0
 Empty label files: 0
 
-(pose_ergo) PS C:\Users\220250572\OneDrive - Regal Rexnord\Desktop\Ergonmics> yolo pose train data="C:/Users/220250572/OneDrive - Regal Rexnord/Desktop/Ergonmics/Dataset/person_keypoints_coco17.yaml" model=yolov8n-pose.pt epochs=20 imgsz=640
+(pose_ergo) PS C:\Users\220250572\Desktop\Ergonmics> yolo pose train data="C:/Users/220250572/Desktop/Ergonmics/Dataset/person_keypoints_coco17.yaml" model=yolov8n-pose.pt epochs=20 imgsz=640
 
   Epoch    GPU_mem   box_loss  pose_loss  kobj_loss   cls_loss   dfl_loss  Instances       Size
       20/20         0G      1.026      1.856     0.2309     0.5215      1.664          8        640: 100% ━━━━━━━━━━━━ 1/1 0.1it/s 8.7s
@@ -175,16 +175,16 @@ Empty label files: 0
                    all          8          8      0.985          1      0.995      0.611      0.985          1      0.995      0.495
 
 20 epochs completed in 0.073 hours.
-Optimizer stripped from C:\Users\220250572\OneDrive - Regal Rexnord\Desktop\Ergonmics\runs\pose\train\weights\last.pt, 6.8MB
-Optimizer stripped from C:\Users\220250572\OneDrive - Regal Rexnord\Desktop\Ergonmics\runs\pose\train\weights\best.pt, 6.8MB
+Optimizer stripped from C:\Users\220250572\Desktop\Ergonmics\runs\pose\train\weights\last.pt, 6.8MB
+Optimizer stripped from C:\Users\220250572\Desktop\Ergonmics\runs\pose\train\weights\best.pt, 6.8MB
 
-Validating C:\Users\220250572\OneDrive - Regal Rexnord\Desktop\Ergonmics\runs\pose\train\weights\best.pt...
+Validating C:\Users\220250572\Desktop\Ergonmics\runs\pose\train\weights\best.pt...
 Ultralytics 8.3.202  Python-3.10.11 torch-2.8.0+cpu CPU (11th Gen Intel Core(TM) i5-1145G7 2.60GHz)
 YOLOv8n-pose summary (fused): 81 layers, 3,289,964 parameters, 0 gradients, 9.2 GFLOPs
                  Class     Images  Instances      Box(P          R      mAP50  mAP50-95)     Pose(P          R      mAP50  mAP50-95): 100% ━━━━━━━━                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95)     Pose(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 1/1 0.2it/s 4.1s
                    all          8          8      0.985          1      0.995      0.611      0.985          1      0.995      0.495
 Speed: 3.4ms preprocess, 430.8ms inference, 0.0ms loss, 28.4ms postprocess per image
-Results saved to C:\Users\220250572\OneDrive - Regal Rexnord\Desktop\Ergonmics\runs\pose\train
+Results saved to C:\Users\220250572\Desktop\Ergonmics\runs\pose\train
  Learn more at https://docs.ultralytics.com/modes/train
 
 Inference:
@@ -205,19 +205,19 @@ High Precision & Recall: Your model is detecting and localizing people and their
 mAP50-95: This is a stricter metric; your scores are reasonable for a small, custom dataset.
 
 test the model:
- PS C:\Users\220250572\OneDrive - Regal Rexnord\Desktop\Ergonmics> yolo pose predict model="C:/Users/220250572/OneDrive - Regal Rexnord/
-Desktop/Ergonmics/runs/pose/train/weights/best.pt" source="C:\Users\220250572\OneDrive - Regal Rexnord\Desktop\Ergonmics\images\Safe_Back_support_1
+ PS C:\Users\220250572\Desktop\Ergonmics> yolo pose predict model="C:/Users/220250572/
+Desktop/Ergonmics/runs/pose/train/weights/best.pt" source="C:\Users\220250572\Desktop\Ergonmics\images\Safe_Back_support_1
 .jpg" 
 Ultralytics 8.3.202  Python-3.10.11 torch-2.8.0+cpu CPU (11th Gen Intel Core(TM) i5-1145G7 2.60GHz)
 YOLOv8n-pose summary (fused): 81 layers, 3,289,964 parameters, 0 gradients, 9.2 GFLOPs
 
-image 1/1 C:\Users\220250572\OneDrive - Regal Rexnord\Desktop\Ergonmics\images\Safe_Back_support_1.jpg: 640x512 1 person, 86.7ms
+image 1/1 C:\Users\220250572\Desktop\Ergonmics\images\Safe_Back_support_1.jpg: 640x512 1 person, 86.7ms
 Speed: 57.3ms preprocess, 86.7ms inference, 2.4ms postprocess per image at shape (1, 3, 640, 512)
-Results saved to C:\Users\220250572\OneDrive - Regal Rexnord\Desktop\Ergonmics\runs\pose\predict
+Results saved to C:\Users\220250572\Desktop\Ergonmics\runs\pose\predict
 
 
 for Testing Image
-(pose_ergo) PS C:\Users\220250572\OneDrive - Regal Rexnord\Desktop\Ergonmics> python "test_rebascore_incl_load_AS_image.py"
+(pose_ergo) PS C:\Users\220250572\Desktop\Ergonmics> python "test_rebascore_incl_load_AS_image.py"
 REBA Worksheet Additions:
 Load/Force: 0 = <5kg, 1 = 5-10kg, 2 = >10kg
 Enter load/force score: 10   
@@ -225,20 +225,20 @@ Activity: 0 = static, 1 = repeated/small, 2 = rapid/unstable
 Enter activity score: 1
 REBA Score: 27
 Inference: Posture shows very high ergonomic risk. Immediate action required.
-Annotated image with skeleton saved at: C:/Users/220250572/OneDrive - Regal Rexnord/Desktop/Ergonmics/output/Unsafe_Lifting_1_pose_skeleton.jpg
-Excel and PDF reports have been saved in C:/Users/220250572/OneDrive - Regal Rexnord/Desktop/Ergonmics/output/
+Annotated image with skeleton saved at: C:/Users/220250572/Desktop/Ergonmics/output/Unsafe_Lifting_1_pose_skeleton.jpg
+Excel and PDF reports have been saved in C:/Users/220250572/Desktop/Ergonmics/output/
 
 For testing Video
-(pose_ergo) PS C:\Users\220250572\OneDrive - Regal Rexnord\Desktop\Ergonmics> python "test_rebascore_incl_load_AS_video.py"
+(pose_ergo) PS C:\Users\220250572\Desktop\Ergonmics> python "test_rebascore_incl_load_AS_video.py"
 REBA Worksheet Additions:
 Load/Force: 0 = <5kg, 1 = 5-10kg, 2 = >10kg
 Enter load/force score: 0
 Activity: 0 = static, 1 = repeated/small, 2 = rapid/unstable
 Enter activity score: 1
-Annotated video, Excel, and PDF reports saved in C:/Users/220250572/OneDrive - Regal Rexnord/Desktop/Ergonmics/output/
+Annotated video, Excel, and PDF reports saved in C:/Users/220250572/Desktop/Ergonmics/output/
 
 Pip list (Lib)
-(pose_ergo) PS C:\Users\220250572\OneDrive - Regal Rexnord\Desktop\Ergonmics> pip list
+(pose_ergo) PS C:\Users\220250572\Desktop\Ergonmics> pip list
 Package            Version
 ------------------ -----------
 certifi            2025.8.3
@@ -283,3 +283,4 @@ tzdata             2025.2
 ultralytics        8.3.202
 ultralytics-thop   2.0.17
 urllib3            2.5.0
+
