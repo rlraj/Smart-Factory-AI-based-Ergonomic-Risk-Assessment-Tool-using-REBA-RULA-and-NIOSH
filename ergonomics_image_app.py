@@ -148,6 +148,8 @@ def evaluate_niosh(load_weight, H, V, D, F, A, C):
     }
 
 def process_image(image_path, model_path, params, output_folder):
+    temp_folder = "temp"
+    os.makedirs(temp_folder, exist_ok=True)
     model = YOLO(model_path)
     results = model.predict(source=image_path, conf=0.5, verbose=False)
     annotated_img_path = os.path.join(output_folder, "annotated_image.jpg")
@@ -240,23 +242,29 @@ params = {
 uploaded_image = st.file_uploader("Upload Image", type=["jpg", "jpeg", "png"])
 model_path = st.text_input("Enter YOLO model path", value="best.pt"
 )
-output_folder = st.text_input("Enter output folder", value="output")
-os.makedirs(output_folder, exist_ok=True)
-
 if uploaded_image and submitted:
     temp_image_path = os.path.join("temp", uploaded_image.name)
     os.makedirs("temp", exist_ok=True)
     with open(temp_image_path, "wb") as f:
         f.write(uploaded_image.getbuffer())
     annotated_img_path, excel_path, pdf_path = process_image(
-        temp_image_path, model_path, params, output_folder
+        temp_image_path, model_path, params
     )
     if annotated_img_path:
         st.image(annotated_img_path, caption="Annotated Image")
         st.download_button("Download Excel Report", open(excel_path, "rb"), file_name="Ergonomic_Evaluation_Report.xlsx")
         st.download_button("Download PDF Report", open(pdf_path, "rb"), file_name="Ergonomic_Evaluation_Report.pdf")
+        
+        # Create ZIP in memory
+        zip_buffer = io.BytesIO()
+        with zipfile.ZipFile(zip_buffer, "w") as zip_file:
+            zip_file.write(excel_path, arcname="Ergonomic_Evaluation_Report.xlsx")
+            zip_file.write(pdf_path, arcname="Ergonomic_Evaluation_Report.pdf")
+        zip_buffer.seek(0)
+        st.download_button("Download ZIP (Excel + PDF)", zip_buffer, file_name="Ergonomic_Evaluation_Reports.zip")
     else:
         st.error("No person detected in the image.")
+
 
 
 
