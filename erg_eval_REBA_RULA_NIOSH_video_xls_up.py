@@ -6,10 +6,10 @@ import cv2
 import os
 
 # ----------- CONFIGURATION -----------
-video_path = r"C:/Users/220250572/OneDrive - Regal Rexnord/Desktop/Ergonmics/test_videos/test_video2.mp4" 
-output_folder = r"C:/Users/220250572/OneDrive - Regal Rexnord/Desktop/Ergonmics/output/videos"
+video_path = r"C:/Users/220250572/Desktop/Ergonmics/test_videos/test_video2.mp4" 
+output_folder = r"C:/Users/220250572/Desktop/Ergonmics/output/videos"
 os.makedirs(output_folder, exist_ok=True)
-model_path = "C:/Users/220250572/OneDrive - Regal Rexnord/Desktop/Ergonmics/runs/pose/train/weights/best.pt"  
+model_path = "C:/Users/220250572/Desktop/Ergonmics/runs/pose/train/weights/best.pt"  
 excel_path = os.path.join(output_folder, "test_video2_Report.xlsx")
 pdf_path = os.path.join(output_folder, "test_video2_Report.pdf")
 annotated_video_path = os.path.join(output_folder, "test_video2_pose_skeleton.mp4")
@@ -238,4 +238,5 @@ doc.close()
 
 print(f"PDF report saved at: {pdf_path}")
 print(f"Excel report saved at: {excel_path}")
+
 print(f"Annotated video saved at: {annotated_video_path}")
