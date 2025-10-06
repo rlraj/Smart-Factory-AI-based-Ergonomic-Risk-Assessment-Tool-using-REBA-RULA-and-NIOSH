@@ -6,9 +6,9 @@ from pathlib import Path
 
 # 🔹 Define your file paths here
 
-INPUT_JSON = Path(r"C:\Users\220250572\OneDrive - Regal Rexnord\Desktop\Ergonmics\ergoposekeypoints\annotations\person_keypoints_default.json")       # input file
+INPUT_JSON = Path(r"C:\Users\220250572\Desktop\Ergonmics\ergoposekeypoints\annotations\person_keypoints_default.json")       # input file
 
-OUTPUT_JSON = Path(r"C:\Users\220250572\OneDrive - Regal Rexnord\Desktop\Ergonmics\ergoposekeypoints\annotations\person_keypoints_coco17_fixed.json") # corrected output
+OUTPUT_JSON = Path(r"C:\Users\220250572\Desktop\Ergonmics\ergoposekeypoints\annotations\person_keypoints_coco17_fixed.json") # corrected output
 
 # -------------------
 
@@ -113,4 +113,5 @@ for ann in data.get("annotations", []):
 OUTPUT_JSON.write_text(json.dumps(data, indent=2), encoding="utf-8")
 
 print(f"✅ Fixed JSON saved to: {OUTPUT_JSON}")
+
  
