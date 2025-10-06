@@ -536,7 +536,7 @@ with st.form("params_form"):
 
         "Enter YOLO model path",
 
-        value="runs/pose/train/weights/best.pt"
+        value="best.pt"
 
     )
 
@@ -657,5 +657,6 @@ if uploaded_video and submitted:
     st.subheader("Summary (Preview)")
 
     st.dataframe(dfs["Summary"].head(20))
+
 
 
