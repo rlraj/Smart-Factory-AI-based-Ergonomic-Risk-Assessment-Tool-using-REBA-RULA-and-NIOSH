@@ -1,0 +1,2 @@
+# Smart-Factory-AI-based-Ergonomic-Risk-Assessment-Tool-using-REBA-RULA-and-NIOSH
+Ergopose is an intelligent posture analysis system designed for industrial ergonomics. It uses pose estimation and vector-based joint angle calculations to evaluate ergonomic risks based on REBA, RULA, and the Revised NIOSH Lifting Equation. The tool supports real-time assessments and integrates with camera systems for continuous monitoring, helping reduce workplace injuries and improve safety compliance
