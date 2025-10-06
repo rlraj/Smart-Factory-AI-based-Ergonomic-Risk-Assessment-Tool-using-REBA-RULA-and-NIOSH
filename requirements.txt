@@ -7,5 +7,4 @@ torch
 torchvision
 matplotlib
 openpyxl
-fitz
-os
+PyMuPDF
