@@ -154,9 +154,9 @@ def process_image(image_path, model_path, params):
     os.makedirs(temp_folder, exist_ok=True)
     model = YOLO(model_path)
     results = model.predict(source=image_path, conf=0.5, verbose=False)
-    annotated_img_path = os.path.join(output_folder, "annotated_image.jpg")
-    excel_path = os.path.join(output_folder, "Ergonomic_Evaluation_Report.xlsx")
-    pdf_path = os.path.join(output_folder, "Ergonomic_Evaluation_Report.pdf")
+    annotated_img_path = os.path.join(temp_folder, "annotated_image.jpg")
+    excel_path = os.path.join(temp_folder, "Ergonomic_Evaluation_Report.xlsx")
+    pdf_path = os.path.join(temp_folder, "Ergonomic_Evaluation_Report.pdf")
     if results[0].keypoints is not None and len(results[0].keypoints.data) > 0:
         keypoints = results[0].keypoints.data[0].cpu().numpy().flatten()
         reba_result = evaluate_reba(keypoints, params["load_force_score"], params["activity_score"])
@@ -266,6 +266,7 @@ if uploaded_image and submitted:
         st.download_button("Download ZIP (Excel + PDF)", zip_buffer, file_name="Ergonomic_Evaluation_Reports.zip")
     else:
         st.error("No person detected in the image.")
+
 
 
 
