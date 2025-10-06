@@ -238,11 +238,10 @@ params = {
 }
 
 uploaded_image = st.file_uploader("Upload Image", type=["jpg", "jpeg", "png"])
-os.makedirs(output_folder, exist_ok=True)
 model_path = st.text_input("Enter YOLO model path", value="best.pt"
 )
 output_folder = st.text_input("Enter output folder", value=r"output")
-
+os.makedirs(output_folder, exist_ok=True)
 if uploaded_image and submitted:
     temp_image_path = os.path.join("temp", uploaded_image.name)
     os.makedirs("temp", exist_ok=True)
@@ -257,5 +256,6 @@ if uploaded_image and submitted:
         st.download_button("Download PDF Report", open(pdf_path, "rb"), file_name="Ergonomic_Evaluation_Report.pdf")
     else:
         st.error("No person detected in the image.")
+
 
 
