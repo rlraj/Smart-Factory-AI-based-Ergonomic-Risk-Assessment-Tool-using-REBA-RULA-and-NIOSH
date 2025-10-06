@@ -536,7 +536,7 @@ with st.form("params_form"):
 
         "Enter YOLO model path",
 
-        value="C:/Users/220250572/OneDrive - Regal Rexnord/Desktop/Ergonmics/runs/pose/train/weights/best.pt"
+        value="C:/Users/220250572/Desktop/Ergonmics/runs/pose/train/weights/best.pt"
 
     )
 
@@ -657,3 +657,4 @@ if uploaded_video and submitted:
     st.subheader("Summary (Preview)")
 
     st.dataframe(dfs["Summary"].head(20))
+
