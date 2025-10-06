@@ -149,7 +149,7 @@ def evaluate_niosh(load_weight, H, V, D, F, A, C):
         "inference": inference
     }
 
-def process_image(image_path, model_path, params, output_folder):
+def process_image(image_path, model_path, params):
     temp_folder = "temp"
     os.makedirs(temp_folder, exist_ok=True)
     model = YOLO(model_path)
@@ -266,6 +266,7 @@ if uploaded_image and submitted:
         st.download_button("Download ZIP (Excel + PDF)", zip_buffer, file_name="Ergonomic_Evaluation_Reports.zip")
     else:
         st.error("No person detected in the image.")
+
 
 
 
