@@ -4,7 +4,7 @@ from pathlib import Path
 
 # 🔹 Define your JSON path here
 
-INPUT_JSON = Path(r"C:\Users\220250572\OneDrive - Regal Rexnord\Desktop\Ergonmics\ergoposekeypoints\annotations\person_keypoints_coco17_fixed.json")
+INPUT_JSON = Path(r"C:\Users\220250572\Desktop\Ergonmics\ergoposekeypoints\annotations\person_keypoints_coco17_fixed.json")
 
 # Standard COCO-17 order
 
@@ -105,4 +105,5 @@ def main():
 if __name__ == "__main__":
 
     main()
+
  
