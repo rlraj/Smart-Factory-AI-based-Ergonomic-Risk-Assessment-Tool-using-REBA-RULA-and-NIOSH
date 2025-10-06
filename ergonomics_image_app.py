@@ -238,9 +238,9 @@ params = {
 }
 
 uploaded_image = st.file_uploader("Upload Image", type=["jpg", "jpeg", "png"])
-model_path = st.text_input("Enter YOLO model path", value="C:/Users/220250572/OneDrive - Regal Rexnord/Desktop/Ergonmics/runs/pose/train/weights/best.pt"
+model_path = st.text_input("Enter YOLO model path", value="best.pt"
 )
-output_folder = st.text_input("Enter output folder", value=r"C:\Users\220250572\OneDrive - Regal Rexnord\Desktop\Ergonmics\output")
+output_folder = st.text_input("Enter output folder", value=r"output")
 
 if uploaded_image and submitted:
     temp_image_path = os.path.join("temp", uploaded_image.name)
@@ -256,3 +256,4 @@ if uploaded_image and submitted:
         st.download_button("Download PDF Report", open(pdf_path, "rb"), file_name="Ergonomic_Evaluation_Report.pdf")
     else:
         st.error("No person detected in the image.")
+
