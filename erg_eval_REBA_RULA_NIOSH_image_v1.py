@@ -7,10 +7,10 @@ import cv2
 import os
 
 # ----------- CONFIGURATION -----------
-image_path = r"C:/Users/220250572/OneDrive - Regal Rexnord/Desktop/Ergonmics/test_images/Unsafe_Lifting_1.jpg"
-output_folder = r"C:/Users/220250572/OneDrive - Regal Rexnord/Desktop/Ergonmics/output/images"
+image_path = r"C:/Users/220250572/Desktop/Ergonmics/test_images/Unsafe_Lifting_1.jpg"
+output_folder = r"C:/Users/220250572/Desktop/Ergonmics/output/images"
 os.makedirs(output_folder, exist_ok=True)
-model_path = "C:/Users/220250572/OneDrive - Regal Rexnord/Desktop/Ergonmics/runs/pose/train/weights/best.pt"
+model_path = "C:/Users/220250572/Desktop/Ergonmics/runs/pose/train/weights/best.pt"
 excel_path = os.path.join(output_folder, "Unsafe_Lifting_1.xlsx")
 pdf_path = os.path.join(output_folder, "Unsafe_Lifting_1.pdf")
 annotated_img_path = os.path.join(output_folder, "Unsafe_Lifting_1_pose_skeleton.jpg")
