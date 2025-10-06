@@ -5,6 +5,8 @@ import cv2
 import os
 from ultralytics import YOLO
 import fitz  # PyMuPDF
+import zipfile
+import io
 
 # ----------- FUNCTIONS -----------
 
@@ -264,6 +266,7 @@ if uploaded_image and submitted:
         st.download_button("Download ZIP (Excel + PDF)", zip_buffer, file_name="Ergonomic_Evaluation_Reports.zip")
     else:
         st.error("No person detected in the image.")
+
 
 
 
