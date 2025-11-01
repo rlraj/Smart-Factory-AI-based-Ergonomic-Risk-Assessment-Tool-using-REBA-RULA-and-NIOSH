@@ -361,12 +361,12 @@ if uploaded_video and submitted:
     for i, row in joint_summary_df.iterrows():
         page.insert_text((50, 60 + i*20), f"{row['Joint']}: Avg={row['Average Score']}, Min={row['Min Score']}, Max={row['Max Score']}, High Risk Frames={row['High Risk Frames']}", fontsize=10)
 
-    page.insert_image(fitz.Rect(50, 200, 550, 500), filename=chart_path)
+    st.plotly_chart(fig, use_container_width=True, key="joint_risk_chart")
 
     for joint, img_path in image_paths:
         page = doc.new_page()
         page.insert_text((50, 30), f"Pose Skeleton for {joint} (High Risk Frame)", fontsize=14)
-        page.insert_image(fitz.Rect(50, 60, 550, 860), filename=img_path)
+        st.plotly_chart(fig, use_container_width=True, key="joint_risk_chart")
 
     doc.save(pdf_path)
     doc.close()
@@ -452,4 +452,5 @@ if uploaded_video and submitted:
     st.markdown("**Recommendations:**")
     for r in recommendations:
         st.markdown(f"- {r}")
+
 
