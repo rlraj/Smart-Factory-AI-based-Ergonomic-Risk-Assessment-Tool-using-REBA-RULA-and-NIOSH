@@ -422,6 +422,8 @@ for joint in joint_columns:
     })
 joint_summary_df = pd.DataFrame(joint_summary)   
 
+# ----------- Dynamic Insight Summary Block -----------
+
 st.subheader("Ergonomic Risk Insights & Recommendations")
 
 # Key Findings by Joint
@@ -436,25 +438,41 @@ st.markdown(
     "Red = high risk, yellow = moderate, green = low, black = anatomical reference."
 )
 
-# Patterns and Implications
+# --- Dynamic Patterns and Implications ---
+patterns = []
+recommendations = []
+
+# Find joints with high risk in most frames (e.g., >50% of total frames)
+total_frames = int(df_video.shape[0])
+high_risk_joints = []
+moderate_risk_joints = []
+low_risk_joints = []
+
+for i, row in joint_summary_df.iterrows():
+    percent_high_risk = row['High Risk Frames'] / total_frames if total_frames else 0
+    if percent_high_risk > 0.5:
+        high_risk_joints.append(row['Joint'])
+    elif percent_high_risk > 0.1:
+        moderate_risk_joints.append(row['Joint'])
+    else:
+        low_risk_joints.append(row['Joint'])
+
+if high_risk_joints:
+    patterns.append(f"{', '.join(high_risk_joints)} joints are at high risk in most frames, indicating persistent strain.")
+    recommendations.append(f"Immediate ergonomic improvements for {', '.join(high_risk_joints)} posture.")
+if moderate_risk_joints:
+    patterns.append(f"{', '.join(moderate_risk_joints)} have moderate risk, with spikes during specific movements.")
+    recommendations.append(f"Review and redesign tasks causing {', '.join(moderate_risk_joints)} strain.")
+if low_risk_joints:
+    patterns.append(f"{', '.join(low_risk_joints)} are generally safe, with only occasional high risk.")
+
+recommendations.append("Monitor and minimize repetitive or sustained awkward postures.")
+recommendations.append("Use pose skeleton visuals for targeted worker training and safety communication.")
+
 st.markdown("**Patterns and Implications:**")
-st.markdown(
-    "- Neck and Leg joints are at high risk in most frames, indicating persistent strain.\n"
-    "- Wrist shows frequent high risk, suggesting repetitive or awkward hand postures.\n"
-    "- Upper Arm and Trunk have moderate risk, with spikes during specific movements.\n"
-    "- Lower Arm is generally safe, with only occasional high risk."
-)
+for p in patterns:
+    st.markdown(f"- {p}")
 
-# Recommendations
 st.markdown("**Recommendations:**")
-st.markdown(
-    "- Immediate ergonomic improvements for neck, leg, and wrist posture.\n"
-    "- Review and redesign tasks causing trunk and upper arm strain.\n"
-    "- Monitor and minimize repetitive or sustained awkward postures.\n"
-    "- Use pose skeleton visuals for targeted worker training and safety communication."
-)
-
-        st.image(img_path, caption=f"{joint} (High Risk Frame)")
-
-
-
+for r in recommendations:
+    st.markdown(f"- {r}")
