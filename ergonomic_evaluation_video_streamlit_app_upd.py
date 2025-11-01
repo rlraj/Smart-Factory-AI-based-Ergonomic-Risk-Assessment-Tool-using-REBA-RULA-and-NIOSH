@@ -403,6 +403,7 @@ if uploaded_video and submitted:
 
     st.subheader("Pose Skeletons for High Risk Frames")
     for joint, img_path in image_paths:
+        st.image(img_path, caption=f"{joint} (High Risk Frame)")
 
     # ----------- Insight Summary Block -----------
 
@@ -476,3 +477,4 @@ for p in patterns:
 st.markdown("**Recommendations:**")
 for r in recommendations:
     st.markdown(f"- {r}")
+
