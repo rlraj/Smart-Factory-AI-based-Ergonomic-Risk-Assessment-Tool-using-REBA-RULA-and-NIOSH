@@ -276,7 +276,7 @@ with st.form("params_form"):
     A = st.number_input("NIOSH Asymmetry Angle (degrees)", min_value=0.0, value=45.0)
     C = st.selectbox("NIOSH Coupling Quality", ["good", "fair", "poor"])
     uploaded_image = st.file_uploader("Upload Image", type=["jpg", "jpeg", "png"])
-    model_path = st.text_input("Enter YOLO model path", value="C:/Users/220250572/OneDrive - Regal Rexnord/Desktop/Ergonmics/runs/pose/train/weights/best.pt")
+    model_path = st.text_input("Enter YOLO model path", value="best.pt")
     output_folder = st.text_input("Enter output folder", value="output")
     submitted = st.form_submit_button("Run Evaluation")
 
@@ -314,4 +314,5 @@ if submitted:
         else:
             st.error("No person detected in the image.")
     else:
+
         st.warning("Please upload an image before running evaluation.")
