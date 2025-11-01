@@ -191,7 +191,7 @@ with st.form("params_form"):
     F = st.number_input("NIOSH Frequency (lifts/min)", min_value=0.0, value=1.0)
     A = st.number_input("NIOSH Asymmetry Angle (degrees)", min_value=0.0, value=45.0)
     C = st.selectbox("NIOSH Coupling Quality", ["good", "fair", "poor"])
-    model_path = st.text_input("YOLO model path", value="C:/Users/220250572/OneDrive - Regal Rexnord/Desktop/Ergonmics/runs/pose/train/weights/best.pt")
+    model_path = st.text_input("YOLO model path", value="best.pt")
     uploaded_video = st.file_uploader("Upload Video", type=["mp4", "avi", "mov", "mpeg4"])
     submitted = st.form_submit_button("Run Evaluation")
 
@@ -403,4 +403,5 @@ if uploaded_video and submitted:
 
     st.subheader("Pose Skeletons for High Risk Frames")
     for joint, img_path in image_paths:
+
         st.image(img_path, caption=f"{joint} (High Risk Frame)")
