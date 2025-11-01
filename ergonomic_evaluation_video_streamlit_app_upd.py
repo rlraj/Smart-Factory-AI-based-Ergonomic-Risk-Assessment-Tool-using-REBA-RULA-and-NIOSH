@@ -361,7 +361,7 @@ if uploaded_video and submitted:
     for i, row in joint_summary_df.iterrows():
         page.insert_text((50, 60 + i*20), f"{row['Joint']}: Avg={row['Average Score']}, Min={row['Min Score']}, Max={row['Max Score']}, High Risk Frames={row['High Risk Frames']}", fontsize=10)
 
-    page.insert_image(fitz.Rect(50, 200, 550, 500), filename=chart_path)
+    
 
     for joint, img_path in image_paths:
         page = doc.new_page()
@@ -405,4 +405,5 @@ if uploaded_video and submitted:
     for joint, img_path in image_paths:
 
         st.image(img_path, caption=f"{joint} (High Risk Frame)")
+
 
