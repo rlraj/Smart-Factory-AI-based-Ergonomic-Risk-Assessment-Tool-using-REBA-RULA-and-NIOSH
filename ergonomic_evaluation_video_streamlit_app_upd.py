@@ -431,6 +431,8 @@ st.markdown("**Key Findings by Joint:**")
 for i, row in joint_summary_df.iterrows():
     st.markdown(f"- **{row['Joint']}**: Avg={row['Average Score']}, High Risk Frames={row['High Risk Frames']}")
 
+joint_columns = ["Trunk Score", "Neck Score", "Leg Score", "Upper Arm Score", "Lower Arm Score", "Wrist Score"]
+
 # Pose Skeletons for High Risk Frames
 st.markdown(
     "**Pose Skeletons for High Risk Frames:**\n"
@@ -476,3 +478,4 @@ for p in patterns:
 st.markdown("**Recommendations:**")
 for r in recommendations:
     st.markdown(f"- {r}")
+
