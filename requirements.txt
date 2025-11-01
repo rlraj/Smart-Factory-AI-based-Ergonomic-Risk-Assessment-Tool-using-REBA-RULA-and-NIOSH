@@ -9,4 +9,5 @@ matplotlib
 openpyxl
 PyMuPDF
 plotly
+kaleido
 
