@@ -8,3 +8,5 @@ torchvision
 matplotlib
 openpyxl
 PyMuPDF
+plotly
+
