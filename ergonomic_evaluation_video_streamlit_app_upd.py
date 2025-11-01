@@ -404,6 +404,57 @@ if uploaded_video and submitted:
     st.subheader("Pose Skeletons for High Risk Frames")
     for joint, img_path in image_paths:
 
+    # ----------- Insight Summary Block -----------
+
+joint_columns = ["Trunk Score", "Neck Score", "Leg Score", "Upper Arm Score", "Lower Arm Score", "Wrist Score"]
+joint_summary = []
+for joint in joint_columns:
+    avg = df_video[joint].mean()
+    min_score = df_video[joint].min()
+    max_score = df_video[joint].max()
+    high_risk_frames = df_video[df_video[joint] == 3].shape[0]
+    joint_summary.append({
+        "Joint": joint.replace(" Score", ""),
+        "Average Score": round(avg, 2),
+        "Min Score": min_score,
+        "Max Score": max_score,
+        "High Risk Frames": high_risk_frames
+    })
+joint_summary_df = pd.DataFrame(joint_summary)   
+
+st.subheader("Ergonomic Risk Insights & Recommendations")
+
+# Key Findings by Joint
+st.markdown("**Key Findings by Joint:**")
+for i, row in joint_summary_df.iterrows():
+    st.markdown(f"- **{row['Joint']}**: Avg={row['Average Score']}, High Risk Frames={row['High Risk Frames']}")
+
+# Pose Skeletons for High Risk Frames
+st.markdown(
+    "**Pose Skeletons for High Risk Frames:**\n"
+    "Visuals below show the posture at the first frame where each joint reached high risk (score=3). "
+    "Red = high risk, yellow = moderate, green = low, black = anatomical reference."
+)
+
+# Patterns and Implications
+st.markdown("**Patterns and Implications:**")
+st.markdown(
+    "- Neck and Leg joints are at high risk in most frames, indicating persistent strain.\n"
+    "- Wrist shows frequent high risk, suggesting repetitive or awkward hand postures.\n"
+    "- Upper Arm and Trunk have moderate risk, with spikes during specific movements.\n"
+    "- Lower Arm is generally safe, with only occasional high risk."
+)
+
+# Recommendations
+st.markdown("**Recommendations:**")
+st.markdown(
+    "- Immediate ergonomic improvements for neck, leg, and wrist posture.\n"
+    "- Review and redesign tasks causing trunk and upper arm strain.\n"
+    "- Monitor and minimize repetitive or sustained awkward postures.\n"
+    "- Use pose skeleton visuals for targeted worker training and safety communication."
+)
+
         st.image(img_path, caption=f"{joint} (High Risk Frame)")
+
 
 
