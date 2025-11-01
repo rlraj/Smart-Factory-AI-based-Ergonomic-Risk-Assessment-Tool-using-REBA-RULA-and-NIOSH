@@ -305,7 +305,7 @@ if uploaded_video and submitted:
     fig.update_traces(texttemplate='%{text:.2f}', textposition='outside')
     fig.update_layout(yaxis=dict(range=[0, 3.5]))
     chart_path = os.path.join(output_folder, "joint_risk_bar_chart.png")
-    fig.write_image(chart_path)
+    
 
     skeleton_pairs = [
         (0, 1), (0, 2), (1, 3), (2, 4),
@@ -399,9 +399,10 @@ if uploaded_video and submitted:
     st.dataframe(summary_df)
 
     st.subheader("Joint Risk Bar Chart")
-    st.image(chart_path)
+    st.plotly_chart(fig, use_container_width=True, key="joint_risk_chart")
 
     st.subheader("Pose Skeletons for High Risk Frames")
     for joint, img_path in image_paths:
 
         st.image(img_path, caption=f"{joint} (High Risk Frame)")
+
