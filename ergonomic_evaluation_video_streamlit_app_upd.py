@@ -285,263 +285,146 @@ if uploaded_video and submitted:
 
 
     # ----------- PDF Report Generation -----------
-
-import os, cv2, numpy as np, pandas as pd
-
-import plotly.express as px
-
-import fitz  # PyMuPDF
-
-# --- build joint_summary_df (your existing logic) ---
-
-joint_columns = ["Trunk Score", "Neck Score", "Leg Score", "Upper Arm Score", "Lower Arm Score", "Wrist Score"]
-
-joint_summary = []
-
-for joint in joint_columns:
-
-    avg = df_video[joint].mean()
-
-    min_score = int(df_video[joint].min())
-
-    max_score = int(df_video[joint].max())
-
-    high_risk_frames = int(df_video[df_video[joint] == 3].shape[0])
-
-    joint_summary.append({
-
-        "Joint": joint.replace(" Score", ""),
-
-        "Average Score": round(float(avg), 2),
-
-        "Min Score": min_score,
-
-        "Max Score": max_score,
-
-        "High Risk Frames": high_risk_frames
-
+    joint_columns = ["Trunk Score", "Neck Score", "Leg Score", "Upper Arm Score", "Lower Arm Score", "Wrist Score"]
+    joint_summary = []
+    for joint in joint_columns:
+        avg = df_video[joint].mean()
+        min_score = int(df_video[joint].min())
+        max_score = int(df_video[joint].max())
+        high_risk_frames = int(df_video[df_video[joint] == 3].shape[0])
+        joint_summary.append({
+            "Joint": joint.replace(" Score", ""),
+            "Average Score": round(float(avg), 2),
+            "Min Score": min_score,
+            "Max Score": max_score,
+            "High Risk Frames": high_risk_frames
     })
+    joint_summary_df = pd.DataFrame(joint_summary)
+    
+    # --- create and save Plotly chart to disk ---
+    fig = px.bar(joint_summary_df, x="Joint", y="Average Score",
+                 title="Average Ergonomic Risk Score per Joint",
+                 labels={"Average Score": "Avg Score"}, text="Average Score")
+    fig.update_traces(texttemplate='%{text:.2f}', textposition='outside')
+    fig.update_layout(yaxis=dict(range=[0, 3.5]))
 
-joint_summary_df = pd.DataFrame(joint_summary)
-
-# --- create and save Plotly chart to disk ---
-
-fig = px.bar(joint_summary_df, x="Joint", y="Average Score",
-
-             title="Average Ergonomic Risk Score per Joint",
-
-             labels={"Average Score": "Avg Score"}, text="Average Score")
-
-fig.update_traces(texttemplate='%{text:.2f}', textposition='outside')
-
-fig.update_layout(yaxis=dict(range=[0, 3.5]))
-
-# ensure output folder exists
-
-os.makedirs(output_folder, exist_ok=True)
-
-chart_path = os.path.join(output_folder, "joint_risk_bar_chart.png")
-
-# Try saving the image (requires kaleido). If it fails, fall back to saving HTML snapshot
-
-try:
-
-    fig.write_image(chart_path, scale=2)
-
-except Exception as e:
-
-    # fallback: write PNG from bytes (Plotly >= 4.9 supports to_image)
-
+    # ensure output folder exists
+    os.makedirs(output_folder, exist_ok=True)
+    chart_path = os.path.join(output_folder, "joint_risk_bar_chart.png")
+    # Try saving the image (requires kaleido). If it fails, fall back to saving HTML snapshot
     try:
+        fig.write_image(chart_path, scale=2)
+    except Exception as e:
+        # fallback: write PNG from bytes (Plotly >= 4.9 supports to_image)
+        try:
+            img_bytes = fig.to_image(format="png", scale=2)
+            with open(chart_path, "wb") as f:
+                f.write(img_bytes)
+        except Exception as e2:
 
-        img_bytes = fig.to_image(format="png", scale=2)
+            # final fallback: save as html for debugging (won't be inserted to PDF)
+            html_path = os.path.join(output_folder, "joint_risk_bar_chart.html")
+            fig.write_html(html_path)
+            print("Warning: couldn't write chart PNG. Saved HTML at", html_path)
 
-        with open(chart_path, "wb") as f:
+     # --- create pose skeleton images ---
 
-            f.write(img_bytes)
+    skeleton_pairs = [
+        (0, 1), (0, 2), (1, 3), (2, 4),
+        (5, 6), (5, 7), (7, 9), (6, 8), (8, 10),
+        (11, 12), (5, 11), (6, 12),
+        (11, 13), (13, 15), (12, 14), (14, 16)
+    ]
 
-    except Exception as e2:
+    color_map = {1: (0, 255, 0), 2: (0, 255, 255), 3: (0, 0, 255)}
+    joint_map = {
+        "Trunk": [5, 11],
+        "Neck": [0, 5],
+        "Leg": [11, 13, 15],
+        "Upper Arm": [5, 7],
+        "Lower Arm": [7, 9],
+        "Wrist": [9]
+    }
 
-        # final fallback: save as html for debugging (won't be inserted to PDF)
-
-        html_path = os.path.join(output_folder, "joint_risk_bar_chart.html")
-
-        fig.write_html(html_path)
-
-        print("Warning: couldn't write chart PNG. Saved HTML at", html_path)
-
-# --- create pose skeleton images ---
-
-skeleton_pairs = [
-
-    (0, 1), (0, 2), (1, 3), (2, 4),
-
-    (5, 6), (5, 7), (7, 9), (6, 8), (8, 10),
-
-    (11, 12), (5, 11), (6, 12),
-
-    (11, 13), (13, 15), (12, 14), (14, 16)
-
-]
-
-color_map = {1: (0, 255, 0), 2: (0, 255, 255), 3: (0, 0, 255)}
-
-joint_map = {
-
-    "Trunk": [5, 11],
-
-    "Neck": [0, 5],
-
-    "Leg": [11, 13, 15],
-
-    "Upper Arm": [5, 7],
-
-    "Lower Arm": [7, 9],
-
-    "Wrist": [9]
-
-}
-
-image_paths = []
-
-canvas_size = (800, 800)
-
-for joint in joint_map:
-
-    col_name = joint + " Score"
-
-    # pick a representative frame (first high-risk else frame with max score)
-
-    if df_video[df_video[col_name] == 3].shape[0] > 0:
-
-        frame_row = df_video[df_video[col_name] == 3].iloc[0]
-
-    else:
-
-        max_score_val = df_video[col_name].max()
-
-        frame_row = df_video[df_video[col_name] == max_score_val].iloc[0]
-
-    keypoints = frame_row["Keypoints"]
+    image_paths = []
+    canvas_size = (800, 800)
+    for joint in joint_map:
+        col_name = joint + " Score"
+        # pick a representative frame (first high-risk else frame with max score)
+        if df_video[df_video[col_name] == 3].shape[0] > 0:
+            frame_row = df_video[df_video[col_name] == 3].iloc[0]
+        else:
+            max_score_val = df_video[col_name].max()
+            frame_row = df_video[df_video[col_name] == max_score_val].iloc[0]
+        keypoints = frame_row["Keypoints"]
 
     # create white canvas
-
     img = np.ones((canvas_size[1], canvas_size[0], 3), dtype=np.uint8) * 255
-
     # If keypoints are relative to original frame size, scale/clip them to canvas
-
     # Optional: detect if keypoints look huge and scale down
-
     kps = np.array(keypoints).astype(float).reshape(-1, 3)  # shape (17,3) -> [x,y,score]
-
     xs = kps[:, 0]
-
     ys = kps[:, 1]
 
     # clip to canvas
-
     xs = np.clip(xs, 0, canvas_size[0] - 1).astype(int)
-
     ys = np.clip(ys, 0, canvas_size[1] - 1).astype(int)
 
     # draw skeleton lines
 
     for p1, p2 in skeleton_pairs:
-
         x1, y1 = int(xs[p1]), int(ys[p1])
-
         x2, y2 = int(xs[p2]), int(ys[p2])
-
         cv2.line(img, (x1, y1), (x2, y2), (0, 0, 0), 2)
 
     # draw keypoint circles with color logic
-
     for i in range(17):
-
         x, y = int(xs[i]), int(ys[i])
-
         color = (0, 0, 0)
-
         for j_idx in joint_map[joint]:
-
             if i == j_idx:
 
                 # frame_row[col_name] should be 1/2/3; make sure int
-
                 score_val = int(frame_row[col_name])
-
                 color = color_map.get(score_val, (0, 0, 0))
-
         cv2.circle(img, (x, y), 6, color, -1)
-
     cv2.putText(img, f"Joint: {joint}", (50, 100), cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 0), 3)
-
     cv2.putText(img, f"Frame: {int(frame_row['Frame'])}", (50, 160), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 0, 0), 2)
-
     pose_path = os.path.join(output_folder, f"pose_{joint}_frame_{int(frame_row['Frame'])}.png")
-
     cv2.imwrite(pose_path, img)
-
     image_paths.append((joint, pose_path))
 
-# --- build PDF and insert images properly ---
-
-doc = fitz.open()
-
-# Summary page
-
-page = doc.new_page()
-
-page.insert_text((50, 30), "Ergonomic Evaluation Summary", fontsize=14)
-
-for i, row in summary_df.iterrows():
-
-    page.insert_text((50, 60 + i * 20), f"{row['Metric']}: {row['Value']}", fontsize=10)
-
-# Joint summary page and insert chart if present
-
-page = doc.new_page()
-
-page.insert_text((50, 30), "Joint-wise Ergonomic Risk Summary", fontsize=14)
-
-for i, row in joint_summary_df.iterrows():
-
-    page.insert_text((50, 60 + i * 20),
-
-                     f"{row['Joint']}: Avg={row['Average Score']}, Min={row['Min Score']}, Max={row['Max Score']}, High Risk Frames={row['High Risk Frames']}",
-
-                     fontsize=10)
-
-if os.path.exists(chart_path):
-
-    page.insert_image(fitz.Rect(50, 200, 550, 500), filename=chart_path)
-
-else:
-
-    print("Chart PNG not found at:", chart_path)
-
-# Insert pose images — note: existence check inside the loop
-
-for joint, img_path in image_paths:
-
+    # --- build PDF and insert images properly ---
+    doc = fitz.open()
+    # Summary page
     page = doc.new_page()
+    page.insert_text((50, 30), "Ergonomic Evaluation Summary", fontsize=14)
+    for i, row in summary_df.iterrows():
+        page.insert_text((50, 60 + i * 20), f"{row['Metric']}: {row['Value']}", fontsize=10)
 
-    page.insert_text((50, 30), f"Pose Skeleton for {joint} (Representative Frame)", fontsize=14)
-
-    if os.path.exists(img_path):
-
-        page.insert_image(fitz.Rect(50, 120, 550, 620), filename=img_path)
-
+    # Joint summary page and insert chart if present
+    page = doc.new_page()
+    page.insert_text((50, 30), "Joint-wise Ergonomic Risk Summary", fontsize=14)
+    for i, row in joint_summary_df.iterrows():
+        page.insert_text((50, 60 + i * 20),
+                         f"{row['Joint']}: Avg={row['Average Score']}, Min={row['Min Score']}, Max={row['Max Score']}, High Risk Frames={row['High Risk Frames']}",
+                         fontsize=10)
+    if os.path.exists(chart_path):
+        page.insert_image(fitz.Rect(50, 200, 550, 500), filename=chart_path)
     else:
+        print("Chart PNG not found at:", chart_path)
+    # Insert pose images — note: existence check inside the loop
+    for joint, img_path in image_paths:
+        page = doc.new_page()
+        page.insert_text((50, 30), f"Pose Skeleton for {joint} (Representative Frame)", fontsize=14)
+        if os.path.exists(img_path):
+            page.insert_image(fitz.Rect(50, 120, 550, 620), filename=img_path)
+        else:
+            page.insert_text((50, 120), f"Image not found: {img_path}", fontsize=10)
 
-        page.insert_text((50, 120), f"Image not found: {img_path}", fontsize=10)
-
-# save & close
-
-doc.save(pdf_path)
-
-doc.close()
-  
+    # save & close
+    doc.save(pdf_path)
+    doc.close()
 
     # ----------- Streamlit Outputs -----------
     st.success("Processing complete!")
@@ -624,6 +507,7 @@ doc.close()
     st.markdown("**Recommendations:**")
     for r in recommendations:
         st.markdown(f"- {r}")
+
 
 
 
