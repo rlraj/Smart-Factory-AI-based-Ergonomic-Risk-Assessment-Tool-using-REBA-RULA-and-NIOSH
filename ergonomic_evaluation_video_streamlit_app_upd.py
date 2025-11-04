@@ -360,13 +360,17 @@ if uploaded_video and submitted:
     page.insert_text((50, 30), "Joint-wise Ergonomic Risk Summary", fontsize=14)
     for i, row in joint_summary_df.iterrows():
         page.insert_text((50, 60 + i*20), f"{row['Joint']}: Avg={row['Average Score']}, Min={row['Min Score']}, Max={row['Max Score']}, High Risk Frames={row['High Risk Frames']}", fontsize=10)
-    
+    if os.path.exists(chart_path):
+        page.insert_image(fitz.Rect(50, 200, 550, 500), filename=chart_path)
+
     
 
     for joint, img_path in image_paths:
         page = doc.new_page()
         page.insert_text((50, 30), f"Pose Skeleton for {joint} (High Risk Frame)", fontsize=14)
-    
+    if os.path.exists(img_path):
+        page.insert_image(fitz.Rect(50, 200, 550, 500), filename=img_path)
+
 
     doc.save(pdf_path)
     doc.close()
@@ -452,6 +456,7 @@ if uploaded_video and submitted:
     st.markdown("**Recommendations:**")
     for r in recommendations:
         st.markdown(f"- {r}")
+
 
 
 
