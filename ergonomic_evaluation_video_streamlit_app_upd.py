@@ -306,7 +306,8 @@ if uploaded_video and submitted:
     fig.update_traces(texttemplate='%{text:.2f}', textposition='outside')
     fig.update_layout(yaxis=dict(range=[0, 3.5]))
     chart_path = os.path.join(output_folder, "joint_risk_bar_chart.png")
-
+    fig.write_image(chart_path)
+    
     skeleton_pairs = [
         (0, 1), (0, 2), (1, 3), (2, 4),
         (5, 6), (5, 7), (7, 9), (6, 8), (8, 10),
@@ -456,6 +457,7 @@ if uploaded_video and submitted:
     st.markdown("**Recommendations:**")
     for r in recommendations:
         st.markdown(f"- {r}")
+
 
 
 
