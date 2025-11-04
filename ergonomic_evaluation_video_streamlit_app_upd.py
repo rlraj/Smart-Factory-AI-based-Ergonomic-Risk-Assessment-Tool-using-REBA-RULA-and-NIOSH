@@ -366,7 +366,7 @@ if uploaded_video and submitted:
     for joint, img_path in image_paths:
         page = doc.new_page()
         page.insert_text((50, 30), f"Pose Skeleton for {joint} (High Risk Frame)", fontsize=14)
-    page.insert_image(fitz.Rect(50, 200, 550, 500), filename=chart_path)  
+    
 
     doc.save(pdf_path)
     doc.close()
@@ -452,6 +452,7 @@ if uploaded_video and submitted:
     st.markdown("**Recommendations:**")
     for r in recommendations:
         st.markdown(f"- {r}")
+
 
 
 
