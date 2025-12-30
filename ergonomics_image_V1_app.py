@@ -65,13 +65,36 @@ def extract_angles_from_keypoints_flat(keypoints_flat):
     }
 
 def map_reba_buckets(angles):
-    trunk_score = 1 if angles['trunk'] <= 10 else 2 if angles['trunk'] <= 20 else 3
-    neck_score = 1 if angles['neck'] <= 10 else 2 if angles['neck'] <= 20 else 3
-    leg_score = 1 if angles['leg'] <= 30 else 2 if angles['leg'] <= 60 else 3
-    upper_arm_score = 1 if angles['upper_arm'] <= 20 else 2 if angles['upper_arm'] <= 60 else 3
-    la = angles['lower_arm']
-    lower_arm_score = 1 if la >= 150 or la <= 30 else 2 if la >= 60 else 3
-    wrist_score = 1 if angles['wrist'] <= 15 else 2 if angles['wrist'] <= 30 else 3
+    """
+    Angle-only REBA buckets (no categorical adjustments):
+      Trunk: 0–20° → 1, 20–60° → 2, >60° → 3
+      Neck : 0–20° → 1, 20–45° → 2, >45° → 3
+      Leg  (knee joint): ≥150° → 1, 120–<150° → 2, <120° → 3
+      Upper Arm (to vertical): 0–20° → 1, 20–45° → 2, >45° → 3
+      Lower Arm (elbow): 60–100° → 1; 30–<60 or >100–≤150 → 2; <30 or >150 → 3
+      Wrist flex/ext: 0–15° → 1, 15–30° → 2, >30° → 3
+    """
+    trunk = float(angles.get('trunk', 0.0))
+    neck  = float(angles.get('neck', 0.0))
+    leg   = float(angles.get('leg', 180.0))
+    upper = float(angles.get('upper_arm', 0.0))
+    lower = float(angles.get('lower_arm', 90.0))
+    wrist = float(angles.get('wrist', 0.0))
+
+    trunk_score = 1 if trunk <= 20 else 2 if trunk <= 60 else 3
+    neck_score  = 1 if neck  <= 20 else 2 if neck  <= 45 else 3
+    leg_score   = 1 if leg   >= 150 else 2 if leg   >= 120 else 3
+    upper_arm_score = 1 if upper <= 20 else 2 if upper <= 45 else 3
+
+    if 60 <= lower <= 100:
+        lower_arm_score = 1
+    elif (30 <= lower < 60) or (100 < lower <= 150):
+        lower_arm_score = 2
+    else:  # <30 or >150
+        lower_arm_score = 3
+
+    wrist_score = 1 if wrist <= 15 else 2 if wrist <= 30 else 3
+
     return {
         "Trunk": trunk_score,
         "Neck": neck_score,
@@ -81,13 +104,28 @@ def map_reba_buckets(angles):
         "Wrist": wrist_score
     }
 
+
 def map_rula_buckets(angles):
-    upper_arm_score = 1 if angles['upper_arm'] <= 20 else 2 if angles['upper_arm'] <= 60 else 3
-    la = angles['lower_arm']
-    lower_arm_score = 1 if la >= 150 or la <= 30 else 2 if la <= 120 else 3
-    wrist_score = 1 if angles['wrist'] <= 15 else 2 if angles['wrist'] <= 30 else 3
-    neck_score = 1 if angles['neck'] <= 10 else 2 if angles['neck'] <= 20 else 3
-    trunk_score = 1 if angles['trunk'] <= 10 else 2 if angles['trunk'] <= 20 else 3
+    """
+    Angle-only RULA buckets (no categorical adjustments):
+      Upper Arm: 0–20° → 1, 20–45° → 2, >45° → 3
+      Lower Arm (elbow): 60–100° → 1, else → 2
+      Wrist flex/ext: 0–15° → 1, 15–30° → 2, >30° → 3
+      Neck: 0–20° → 1, 20–45° → 2, >45° → 3
+      Trunk: 0–20° → 1, 20–60° → 2, >60° → 3
+    """
+    upper = float(angles.get('upper_arm', 0.0))
+    lower = float(angles.get('lower_arm', 90.0))
+    wrist = float(angles.get('wrist', 0.0))
+    neck  = float(angles.get('neck', 0.0))
+    trunk = float(angles.get('trunk', 0.0))
+
+    upper_arm_score = 1 if upper <= 20 else 2 if upper <= 45 else 3
+    lower_arm_score = 1 if (60 <= lower <= 100) else 2
+    wrist_score     = 1 if wrist <= 15 else 2 if wrist <= 30 else 3
+    neck_score      = 1 if neck  <= 20 else 2 if neck  <= 45 else 3
+    trunk_score     = 1 if trunk <= 20 else 2 if trunk <= 60 else 3
+
     return {
         "Upper Arm": upper_arm_score,
         "Lower Arm": lower_arm_score,
@@ -95,6 +133,7 @@ def map_rula_buckets(angles):
         "Neck": neck_score,
         "Trunk": trunk_score
     }
+
 
 def evaluate_reba_corrected(keypoints_flat, load_force_score=0, activity_score=0, coupling_score=1):
     angles = extract_angles_from_keypoints_flat(keypoints_flat)
@@ -316,3 +355,4 @@ if submitted:
     else:
 
         st.warning("Please upload an image before running evaluation.")
+
